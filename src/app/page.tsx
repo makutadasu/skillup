@@ -416,7 +416,7 @@ export default function Home() {
   return (
     <main className="container">
       <div className="animate-in" style={{ animationDelay: '0.1s', textAlign: 'center', marginBottom: '3rem' }}>
-        <h1>爆速 Input & Notebook LM 連携ツール</h1>
+        <h1>Input & Notebook LM 連携ツール</h1>
         <p className="subtitle">YouTube・Web記事から抽出した知識を収益化資産へ変換。</p>
       </div>
 
