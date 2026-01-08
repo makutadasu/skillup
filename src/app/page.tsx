@@ -924,6 +924,16 @@ export default function Home() {
                           >
                             <Sparkles size={14} /> この動画のみ要約（設定へ）
                           </button>
+                          <a
+                            href={video.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '8px', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'var(--foreground)' }}
+                          >
+                            <ExternalLink size={14} style={{ marginRight: '4px' }} /> 元のページを開く
+                          </a>
                         </div>
                       </div>
                     );
@@ -1118,6 +1128,16 @@ export default function Home() {
                           >
                             <Sparkles size={14} /> この動画のみ要約（設定へ）
                           </button>
+                          <a
+                            href={video.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '8px', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'var(--foreground)' }}
+                          >
+                            <ExternalLink size={14} style={{ marginRight: '4px' }} /> 元のページを開く
+                          </a>
                         </div>
                       </div>
                     );
