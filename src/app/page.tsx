@@ -61,6 +61,7 @@ export default function Home() {
   const [researchQuery, setResearchQuery] = useState('AI副業');
   const [researchTimeRange, setResearchTimeRange] = useState<'24h' | '7d'>('24h');
   const [researchIsGlobal, setResearchIsGlobal] = useState(false);
+  const [researchSource, setResearchSource] = useState<'youtube' | 'note' | 'mixed'>('youtube');
   const [researchLoading, setResearchLoading] = useState(false);
   const [researchResultText, setResearchResultText] = useState('');
 
@@ -274,7 +275,8 @@ export default function Home() {
         body: JSON.stringify({
           query: researchQuery,
           timeRange: researchTimeRange,
-          isGlobal: researchIsGlobal
+          isGlobal: researchIsGlobal,
+          source: researchSource
         })
       });
 
@@ -752,7 +754,7 @@ export default function Home() {
               <Youtube color="#ef4444" /> チャンネル最新動画監視
             </h2>
             <p style={{ color: 'var(--secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-              チャンネルIDまたはハンドル（例: @username）を入力して、最新の動画リストから直接要約を実行できます。
+              チャンネルID・ハンドル (@handle) または <strong>noteユーザーURL</strong> を入力して、最新の投稿から直接要約を実行できます。
             </p>
 
             <div style={{ marginBottom: '1rem' }}>
@@ -796,7 +798,7 @@ export default function Home() {
               <input
                 type="text"
                 className="glass-input"
-                placeholder="チャンネルID または @handle"
+                placeholder="YouTubeチャンネルID / @handle / noteユーザーURL"
                 value={channelInput}
                 onChange={(e) => setChannelInput(e.target.value)}
               />
@@ -983,6 +985,22 @@ export default function Home() {
                 >
                   <option value="domestic">国内 (JP)</option>
                   <option value="global">世界 (Global)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
+                  検索ソース
+                </label>
+                <select
+                  className="glass-input"
+                  value={researchSource}
+                  onChange={(e) => setResearchSource(e.target.value as any)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="youtube">YouTube</option>
+                  <option value="note">Note (Hashtag)</option>
+                  <option value="mixed">YouTube + Note</option>
                 </select>
               </div>
             </div>
