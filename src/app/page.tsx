@@ -11,6 +11,7 @@ interface ChannelVideo {
   thumbnail: string;
   publishedAt: string;
   url: string;
+  type?: 'youtube' | 'note';
 }
 
 interface HistoryItem {
@@ -1264,11 +1265,24 @@ export default function Home() {
                         </div>
 
                         <div style={{ position: 'relative', paddingTop: '56.25%' }}>
-                          <img
-                            src={video.thumbnail}
-                            alt={video.title}
-                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
-                          />
+                          {video.thumbnail ? (
+                            <img
+                              src={video.thumbnail}
+                              alt={video.title}
+                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
+                            />
+                          ) : (
+                            <div style={{
+                              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                              background: '#41C9B4', // note green
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              flexDirection: 'column',
+                              opacity: isChecked ? 0.8 : 1
+                            }}>
+                              <span style={{ fontSize: '2rem', fontWeight: 700, color: 'white' }}>note</span>
+                              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.9)' }}>Article</span>
+                            </div>
+                          )}
                         </div>
                         <div style={{ padding: '12px' }}>
                           <div style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px', lineHeight: 1.4, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
