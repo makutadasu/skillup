@@ -776,9 +776,17 @@ export default function Home() {
                           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       ) : (
-                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <ExternalLink size={32} color="#475569" />
-                        </div>
+                        item.url.includes('note.com') ? (
+                          <img
+                            src="/note-logo.jpg"
+                            alt="Note Article"
+                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <ExternalLink size={32} color="#475569" />
+                          </div>
+                        )
                       )}
                     </div>
                     <div style={{ padding: '1.25rem' }}>
@@ -1061,11 +1069,19 @@ export default function Home() {
                         </div>
 
                         <div style={{ position: 'relative', paddingTop: '56.25%' }}>
-                          <img
-                            src={video.thumbnail}
-                            alt={video.title}
-                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
-                          />
+                          {video.thumbnail ? (
+                            <img
+                              src={video.thumbnail}
+                              alt={video.title}
+                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
+                            />
+                          ) : (
+                            <img
+                              src="/note-logo.jpg"
+                              alt="Note Article"
+                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
+                            />
+                          )}
                         </div>
                         <div style={{ padding: '12px' }}>
                           <div style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px', lineHeight: 1.4, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
