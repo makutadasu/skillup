@@ -896,17 +896,30 @@ export default function Home() {
                         <Youtube size={16} color="#ef4444" />
                       )}
                       <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{b.name}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newBookmarks = bookmarks.filter(item => item.id !== b.id);
-                          setBookmarks(newBookmarks);
-                          localStorage.setItem('channel_bookmarks', JSON.stringify(newBookmarks));
-                        }}
-                        style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '2px', marginLeft: '4px' }}
-                      >
-                        <Trash2 size={12} />
-                      </button>
+                      <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px', alignItems: 'center' }}>
+                        <a
+                          href={b.type === 'note' ? b.query : (b.query.startsWith('@') ? `https://www.youtube.com/${b.query}` : `https://www.youtube.com/channel/${b.query}`)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ color: '#94a3b8', padding: '4px', display: 'flex', alignItems: 'center' }}
+                          title="元のページを開く"
+                        >
+                          <ExternalLink size={12} />
+                        </a>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const newBookmarks = bookmarks.filter(item => item.id !== b.id);
+                            setBookmarks(newBookmarks);
+                            localStorage.setItem('channel_bookmarks', JSON.stringify(newBookmarks));
+                          }}
+                          style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}
+                          title="ブックマークを削除"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
