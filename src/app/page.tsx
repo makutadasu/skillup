@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Sparkles, Copy, Check, ExternalLink, Loader2, Youtube, Play, ArrowRight, History, Layout, Trash2, Brain, Zap, TrendingUp, Search, BookOpen, Download, Target } from 'lucide-react';
+import { Sparkles, Copy, Check, ExternalLink, Loader2, Youtube, Play, ArrowRight, History, Layout, Trash2, Brain, Zap, TrendingUp, Search, BookOpen, Download, Target, Star, Bookmark } from 'lucide-react';
 import { GeminiModelType } from '@/types/gemini';
 import MermaidDiagram from '@/components/MermaidDiagram';
 
@@ -20,6 +20,13 @@ interface HistoryItem {
   thumbnail: string;
   summary: string;
   date: number;
+}
+
+interface BookmarkedChannel {
+  id: string;
+  name: string;
+  query: string;
+  type: 'youtube' | 'note';
 }
 
 type TabType = 'summarize' | 'history' | 'channel' | 'research';
@@ -55,6 +62,7 @@ export default function Home() {
   const [channelCheckedVideos, setChannelCheckedVideos] = useState<Set<string>>(new Set());
   const [channelBatchLoading, setChannelBatchLoading] = useState(false);
   const [channelResultText, setChannelResultText] = useState('');
+  const [bookmarks, setBookmarks] = useState<BookmarkedChannel[]>([]);
 
   // Research state
   const [researchVideos, setResearchVideos] = useState<ChannelVideo[]>([]);
@@ -77,6 +85,14 @@ export default function Home() {
         setHistory(JSON.parse(saved));
       } catch (e) {
         console.error('Failed to parse history', e);
+      }
+    }
+    const savedBookmarks = localStorage.getItem('channel_bookmarks');
+    if (savedBookmarks) {
+      try {
+        setBookmarks(JSON.parse(savedBookmarks));
+      } catch (e) {
+        console.error('Failed to parse bookmarks', e);
       }
     }
   }, []);
@@ -261,6 +277,50 @@ export default function Home() {
     } finally {
       setChannelBatchLoading(false);
     }
+  };
+
+  const toggleBookmark = () => {
+    if (!channelName || !channelInput) return;
+
+    const existingIndex = bookmarks.findIndex(b => b.query === channelInput);
+    let newBookmarks;
+
+    if (existingIndex >= 0) {
+      newBookmarks = bookmarks.filter((_, i) => i !== existingIndex);
+    } else {
+      const newBookmark: BookmarkedChannel = {
+        id: Date.now().toString(),
+        name: channelName,
+        query: channelInput,
+        type: channelInput.includes('note.com') ? 'note' : 'youtube'
+      };
+      newBookmarks = [newBookmark, ...bookmarks];
+    }
+
+    setBookmarks(newBookmarks);
+    localStorage.setItem('channel_bookmarks', JSON.stringify(newBookmarks));
+  };
+
+  const textToColor = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    return '#' + '00000'.substring(0, 6 - c.length) + c;
+  }
+
+  const loadBookmark = (bookmark: BookmarkedChannel) => {
+    setChannelInput(bookmark.query);
+    // Automatically fetch? Maybe better to let user click fetch, or auto fetch.
+    // Let's auto fetch for better UX, but we need to wait for state update.
+    // Actually fetchChannelVideos uses channelInput state which might not be updated yet.
+    // So we'll update state and then call a version that takes an arg, OR just update input.
+    // To keep it simple, just update input and user clicks "Get".
+    // EDIT: Updating to auto-fetch is user friendly.
+    // We can modify fetchChannelVideos to accept an optional argument.
+    // For now, let's just set input and let user click, or trigger via ref.
+    // Actually, let's just set the input.
   };
 
   const handleResearch = async () => {
@@ -805,6 +865,54 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Bookmarks List */}
+            {bookmarks.length > 0 && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#94a3b8', fontSize: '0.9rem' }}>
+                  <Bookmark size={14} style={{ display: 'inline', marginRight: '4px' }} /> ブックマーク済み
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  {bookmarks.map(b => (
+                    <div
+                      key={b.id}
+                      className="glass-panel hover-scale"
+                      onClick={() => {
+                        setChannelInput(b.query);
+                        // Optional: Auto fetch
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        border: channelInput === b.query ? '1px solid var(--primary)' : undefined,
+                        background: 'rgba(255, 255, 255, 0.03)'
+                      }}
+                    >
+                      {b.type === 'note' ? (
+                        <span style={{ fontSize: '1rem' }}>📝</span>
+                      ) : (
+                        <Youtube size={16} color="#ef4444" />
+                      )}
+                      <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{b.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newBookmarks = bookmarks.filter(item => item.id !== b.id);
+                          setBookmarks(newBookmarks);
+                          localStorage.setItem('channel_bookmarks', JSON.stringify(newBookmarks));
+                        }}
+                        style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '2px', marginLeft: '4px' }}
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="input-group">
               <input
                 type="text"
@@ -849,8 +957,27 @@ export default function Home() {
 
             {channelVideos.length > 0 && (
               <div className="animate-in">
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#94a3b8' }}>
-                  {channelName} の{channelSortBy === 'date' ? '最新動画' : '人気動画'}
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span>{channelName} の{channelSortBy === 'date' ? '最新動画' : '人気動画'}</span>
+                  <button
+                    onClick={toggleBookmark}
+                    title={bookmarks.some(b => b.query === channelInput) ? "ブックマークを解除" : "ブックマークに追加"}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '4px'
+                    }}
+                  >
+                    <Star
+                      size={20}
+                      fill={bookmarks.some(b => b.query === channelInput) ? "#f59e0b" : "none"}
+                      color={bookmarks.some(b => b.query === channelInput) ? "#f59e0b" : "#94a3b8"}
+                    />
+                  </button>
                 </h3>
 
                 <div className="toolbar">
