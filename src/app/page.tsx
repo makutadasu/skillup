@@ -1272,16 +1272,11 @@ export default function Home() {
                               style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
                             />
                           ) : (
-                            <div style={{
-                              position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                              background: '#41C9B4', // note green
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              flexDirection: 'column',
-                              opacity: isChecked ? 0.8 : 1
-                            }}>
-                              <span style={{ fontSize: '2rem', fontWeight: 700, color: 'white' }}>note</span>
-                              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.9)' }}>Article</span>
-                            </div>
+                            <img
+                              src="/note-logo.jpg"
+                              alt="Note Article"
+                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
+                            />
                           )}
                         </div>
                         <div style={{ padding: '12px' }}>
