@@ -528,7 +528,7 @@ export default function Home() {
                 <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 500, color: '#94a3b8', fontSize: '0.9rem' }}>
                   出力フォーマット
                 </label>
-                <div className="grid-3">
+                <div className="grid-2">
                   <div
                     className={`glass-panel hover-scale ${outputMode === 'report' ? 'selected-model' : ''}`}
                     onClick={() => setOutputMode('report')}
@@ -551,29 +551,27 @@ export default function Home() {
                     </div>
                     <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>約3,000文字の有料note下書き</p>
                   </div>
-                  <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
-                    <div
-                      className={`glass-panel hover-scale ${outputMode === 'notebook-source' ? 'selected-model' : ''}`}
-                      onClick={() => setOutputMode('notebook-source')}
-                      style={{ padding: '12px', cursor: 'pointer', border: outputMode === 'notebook-source' ? '2px solid #10b981' : undefined }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <BookOpen size={16} color="#10b981" />
-                        <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>NotebookLMソース</span>
-                      </div>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>純粋学習・事実のみ抽出</p>
+                  <div
+                    className={`glass-panel hover-scale ${outputMode === 'notebook-source' ? 'selected-model' : ''}`}
+                    onClick={() => setOutputMode('notebook-source')}
+                    style={{ padding: '12px', cursor: 'pointer', border: outputMode === 'notebook-source' ? '2px solid #10b981' : undefined }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <BookOpen size={16} color="#10b981" />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>NotebookLMソース</span>
                     </div>
-                    <div
-                      className={`glass-panel hover-scale ${outputMode === 'action-plan' ? 'selected-model' : ''}`}
-                      onClick={() => setOutputMode('action-plan')}
-                      style={{ padding: '12px', cursor: 'pointer', border: outputMode === 'action-plan' ? '2px solid #f59e0b' : undefined }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <Target size={16} color="#f59e0b" />
-                        <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>行動計画 (Action)</span>
-                      </div>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>知識を具体的な行動へ変換</p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>純粋学習・事実のみ抽出</p>
+                  </div>
+                  <div
+                    className={`glass-panel hover-scale ${outputMode === 'action-plan' ? 'selected-model' : ''}`}
+                    onClick={() => setOutputMode('action-plan')}
+                    style={{ padding: '12px', cursor: 'pointer', border: outputMode === 'action-plan' ? '2px solid #f59e0b' : undefined }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <Target size={16} color="#f59e0b" />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>行動計画 (Action)</span>
                     </div>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>知識を具体的な行動へ変換</p>
                   </div>
                 </div>
 
