@@ -898,7 +898,15 @@ export default function Home() {
                       <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{b.name}</span>
                       <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px', alignItems: 'center' }}>
                         <a
-                          href={b.type === 'note' ? b.query : (b.query.startsWith('@') ? `https://www.youtube.com/${b.query}` : `https://www.youtube.com/channel/${b.query}`)}
+                          href={
+                            b.type === 'note'
+                              ? b.query
+                              : (b.query.startsWith('http')
+                                ? b.query
+                                : (b.query.startsWith('@')
+                                  ? `https://www.youtube.com/${b.query}`
+                                  : `https://www.youtube.com/channel/${b.query}`))
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
