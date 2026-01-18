@@ -675,491 +675,492 @@ export default function Home() {
               )}
             </div>
           </div>
-          )
+        </div>
+      )
       }
 
-          {/* History Tab */}
-          {
-            activeTab === 'history' && (
-              <div className="animate-in">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <h2 style={{ margin: 0 }}>要約履歴</h2>
-                  {history.length > 0 && (
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '0.8rem', color: '#ef4444' }}
-                      onClick={clearHistory}
-                    >
-                      <Trash2 size={14} /> 履歴をクリア
-                    </button>
-                  )}
-                </div>
+      {/* History Tab */}
+      {
+        activeTab === 'history' && (
+          <div className="animate-in">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ margin: 0 }}>要約履歴</h2>
+              {history.length > 0 && (
+                <button
+                  className="btn btn-secondary"
+                  style={{ fontSize: '0.8rem', color: '#ef4444' }}
+                  onClick={clearHistory}
+                >
+                  <Trash2 size={14} /> 履歴をクリア
+                </button>
+              )}
+            </div>
 
-                {history.length === 0 ? (
-                  <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--secondary)' }}>
-                    履歴がありません。まずはURLを要約してみましょう。
-                  </div>
-                ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-                    {history.map((item) => (
-                      <div
-                        key={item.id}
-                        className="glass-panel hover-scale"
-                        style={{ overflow: 'hidden', cursor: 'pointer', padding: 0 }}
-                        onClick={() => loadFromHistory(item)}
-                      >
-                        <div style={{ position: 'relative', paddingTop: '56.25%', background: '#1e293b' }}>
-                          {item.thumbnail ? (
-                            <img
-                              src={item.thumbnail}
-                              alt={item.title}
-                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                          ) : (
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <ExternalLink size={32} color="#475569" />
-                            </div>
-                          )}
-                        </div>
-                        <div style={{ padding: '1.25rem' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-                            <h3 style={{ fontSize: '1rem', margin: 0, lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
-                              {item.title}
-                            </h3>
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn-icon"
-                              onClick={(e) => e.stopPropagation()}
-                              style={{ color: 'var(--primary)', flexShrink: 0 }}
-                            >
-                              <ExternalLink size={16} />
-                            </a>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--secondary)' }}>
-                              {new Date(item.date).toLocaleDateString()} {new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                            <button
-                              className="btn-icon"
-                              onClick={(e) => deleteHistoryItem(item.id, e)}
-                              style={{ color: '#ef4444', opacity: 0.6 }}
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+            {history.length === 0 ? (
+              <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--secondary)' }}>
+                履歴がありません。まずはURLを要約してみましょう。
               </div>
-            )
-          }
-
-          {/* Channel Monitor Section */}
-          {
-            activeTab === 'channel' && (
-              <div className="glass-panel animate-in" style={{ padding: '2rem' }}>
-                <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Youtube color="#ef4444" /> チャンネル最新動画監視
-                </h2>
-                <p style={{ color: 'var(--secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                  チャンネルID・ハンドル (@handle) または <strong>noteユーザーURL</strong> を入力して、最新の投稿から直接要約を実行できます。
-                </p>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', padding: '4px', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
-                    <button
-                      onClick={() => setChannelSortBy('date')}
-                      style={{
-                        padding: '6px 16px',
-                        borderRadius: '6px',
-                        background: channelSortBy === 'date' ? 'var(--primary)' : 'transparent',
-                        color: channelSortBy === 'date' ? 'white' : 'var(--secondary)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '0.85rem',
-                        fontWeight: 500,
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      最新動画 (10件)
-                    </button>
-                    <button
-                      onClick={() => setChannelSortBy('viewCount')}
-                      style={{
-                        padding: '6px 16px',
-                        borderRadius: '6px',
-                        background: channelSortBy === 'viewCount' ? 'var(--accent)' : 'transparent',
-                        color: channelSortBy === 'viewCount' ? 'white' : 'var(--secondary)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '0.85rem',
-                        fontWeight: 500,
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      人気の動画 (10選)
-                    </button>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                {history.map((item) => (
+                  <div
+                    key={item.id}
+                    className="glass-panel hover-scale"
+                    style={{ overflow: 'hidden', cursor: 'pointer', padding: 0 }}
+                    onClick={() => loadFromHistory(item)}
+                  >
+                    <div style={{ position: 'relative', paddingTop: '56.25%', background: '#1e293b' }}>
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <ExternalLink size={32} color="#475569" />
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ padding: '1.25rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+                        <h3 style={{ fontSize: '1rem', margin: 0, lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', flex: 1 }}>
+                          {item.title}
+                        </h3>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-icon"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ color: 'var(--primary)', flexShrink: 0 }}
+                        >
+                          <ExternalLink size={16} />
+                        </a>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--secondary)' }}>
+                          {new Date(item.date).toLocaleDateString()} {new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        <button
+                          className="btn-icon"
+                          onClick={(e) => deleteHistoryItem(item.id, e)}
+                          style={{ color: '#ef4444', opacity: 0.6 }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      }
 
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="glass-input"
-                    placeholder="YouTubeチャンネルID / @handle / noteユーザーURL"
-                    value={channelInput}
-                    onChange={(e) => setChannelInput(e.target.value)}
-                  />
+      {/* Channel Monitor Section */}
+      {
+        activeTab === 'channel' && (
+          <div className="glass-panel animate-in" style={{ padding: '2rem' }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Youtube color="#ef4444" /> チャンネル最新動画監視
+            </h2>
+            <p style={{ color: 'var(--secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+              チャンネルID・ハンドル (@handle) または <strong>noteユーザーURL</strong> を入力して、最新の投稿から直接要約を実行できます。
+            </p>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{ display: 'inline-flex', background: 'rgba(0,0,0,0.2)', padding: '4px', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                <button
+                  onClick={() => setChannelSortBy('date')}
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '6px',
+                    background: channelSortBy === 'date' ? 'var(--primary)' : 'transparent',
+                    color: channelSortBy === 'date' ? 'white' : 'var(--secondary)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: 500,
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  最新動画 (10件)
+                </button>
+                <button
+                  onClick={() => setChannelSortBy('viewCount')}
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '6px',
+                    background: channelSortBy === 'viewCount' ? 'var(--accent)' : 'transparent',
+                    color: channelSortBy === 'viewCount' ? 'white' : 'var(--secondary)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: 500,
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  人気の動画 (10選)
+                </button>
+              </div>
+            </div>
+
+            <div className="input-group">
+              <input
+                type="text"
+                className="glass-input"
+                placeholder="YouTubeチャンネルID / @handle / noteユーザーURL"
+                value={channelInput}
+                onChange={(e) => setChannelInput(e.target.value)}
+              />
+              <button
+                className="btn btn-secondary"
+                onClick={fetchChannelVideos}
+                disabled={channelLoading || !channelInput}
+                style={{ minWidth: '100px' }}
+              >
+                {channelLoading ? <Loader2 className="loading-spinner" /> : '取得'}
+              </button>
+            </div>
+
+            {channelError && (
+              <div style={{ marginBottom: '1rem', color: '#ef4444', fontSize: '0.9rem' }}>{channelError}</div>
+            )}
+
+            {channelResultText && (
+              <div className="glass-panel" style={{ background: 'rgba(0,0,0,0.3)', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
                   <button
                     className="btn btn-secondary"
-                    onClick={fetchChannelVideos}
-                    disabled={channelLoading || !channelInput}
-                    style={{ minWidth: '100px' }}
+                    onClick={() => copyToClipboard(channelResultText)}
+                    style={{ fontSize: '0.8rem', padding: '6px 12px' }}
                   >
-                    {channelLoading ? <Loader2 className="loading-spinner" /> : '取得'}
+                    <Copy size={14} /> Markdownをコピー
+                  </button>
+                </div>
+                <textarea
+                  className="glass-input"
+                  readOnly
+                  value={channelResultText}
+                  style={{ minHeight: '300px', fontSize: '0.9rem', fontFamily: 'monospace' }}
+                />
+              </div>
+            )}
+
+            {channelVideos.length > 0 && (
+              <div className="animate-in">
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#94a3b8' }}>
+                  {channelName} の{channelSortBy === 'date' ? '最新動画' : '人気動画'}
+                </h3>
+
+                <div className="toolbar">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input
+                      type="checkbox"
+                      checked={channelCheckedVideos.size === channelVideos.length && channelVideos.length > 0}
+                      onChange={selectAllChannelVideos}
+                      style={{ transform: 'scale(1.2)', cursor: 'pointer' }}
+                    />
+                    <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>
+                      すべて選択 ({channelCheckedVideos.size}/{channelVideos.length})
+                    </span>
+                  </div>
+                  <select
+                    className="glass-input"
+                    value={outputMode}
+                    onChange={(e) => setOutputMode(e.target.value as any)}
+                    style={{ fontSize: '0.85rem', padding: '8px', width: 'auto', marginRight: '8px', cursor: 'pointer' }}
+                  >
+                    <option value="notebook-source">NotebookLMソース</option>
+                    <option value="report">資産化レポート</option>
+                    <option value="article">深堀り解説記事</option>
+                  </select>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleChannelBatchProcess}
+                    disabled={channelBatchLoading || channelCheckedVideos.size === 0}
+                    style={{ fontSize: '0.85rem', padding: '8px 16px', background: channelBatchLoading ? '#cbd5e1' : undefined }}
+                  >
+                    {channelBatchLoading ? <Loader2 className="loading-spinner" size={16} /> : <Sparkles size={16} />}
+                    {channelBatchLoading ? '生成中...' : '一括生成を実行'}
                   </button>
                 </div>
 
-                {channelError && (
-                  <div style={{ marginBottom: '1rem', color: '#ef4444', fontSize: '0.9rem' }}>{channelError}</div>
-                )}
-
-                {channelResultText && (
-                  <div className="glass-panel" style={{ background: 'rgba(0,0,0,0.3)', marginBottom: '2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => copyToClipboard(channelResultText)}
-                        style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+                  {channelVideos.map((video) => {
+                    const isChecked = channelCheckedVideos.has(video.id);
+                    return (
+                      <div
+                        key={video.id}
+                        style={{
+                          background: isChecked ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0,0,0,0.2)',
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          border: isChecked ? '2px solid var(--primary)' : '1px solid var(--glass-border)',
+                          position: 'relative',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onClick={() => toggleChannelVideoSelection(video.id)}
                       >
-                        <Copy size={14} /> Markdownをコピー
-                      </button>
-                    </div>
-                    <textarea
-                      className="glass-input"
-                      readOnly
-                      value={channelResultText}
-                      style={{ minHeight: '300px', fontSize: '0.9rem', fontFamily: 'monospace' }}
-                    />
-                  </div>
-                )}
+                        <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => { }} // Handled by parent div click
+                            style={{ transform: 'scale(1.5)', cursor: 'pointer', accentColor: 'var(--primary)' }}
+                          />
+                        </div>
 
-                {channelVideos.length > 0 && (
-                  <div className="animate-in">
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#94a3b8' }}>
-                      {channelName} の{channelSortBy === 'date' ? '最新動画' : '人気動画'}
-                    </h3>
-
-                    <div className="toolbar">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <input
-                          type="checkbox"
-                          checked={channelCheckedVideos.size === channelVideos.length && channelVideos.length > 0}
-                          onChange={selectAllChannelVideos}
-                          style={{ transform: 'scale(1.2)', cursor: 'pointer' }}
-                        />
-                        <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>
-                          すべて選択 ({channelCheckedVideos.size}/{channelVideos.length})
-                        </span>
-                      </div>
-                      <select
-                        className="glass-input"
-                        value={outputMode}
-                        onChange={(e) => setOutputMode(e.target.value as any)}
-                        style={{ fontSize: '0.85rem', padding: '8px', width: 'auto', marginRight: '8px', cursor: 'pointer' }}
-                      >
-                        <option value="notebook-source">NotebookLMソース</option>
-                        <option value="report">資産化レポート</option>
-                        <option value="article">深堀り解説記事</option>
-                      </select>
-                      <button
-                        className="btn btn-primary"
-                        onClick={handleChannelBatchProcess}
-                        disabled={channelBatchLoading || channelCheckedVideos.size === 0}
-                        style={{ fontSize: '0.85rem', padding: '8px 16px', background: channelBatchLoading ? '#cbd5e1' : undefined }}
-                      >
-                        {channelBatchLoading ? <Loader2 className="loading-spinner" size={16} /> : <Sparkles size={16} />}
-                        {channelBatchLoading ? '生成中...' : '一括生成を実行'}
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-                      {channelVideos.map((video) => {
-                        const isChecked = channelCheckedVideos.has(video.id);
-                        return (
-                          <div
-                            key={video.id}
-                            style={{
-                              background: isChecked ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0,0,0,0.2)',
-                              borderRadius: '12px',
-                              overflow: 'hidden',
-                              border: isChecked ? '2px solid var(--primary)' : '1px solid var(--glass-border)',
-                              position: 'relative',
-                              transition: 'all 0.2s ease'
-                            }}
-                            onClick={() => toggleChannelVideoSelection(video.id)}
-                          >
-                            <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => { }} // Handled by parent div click
-                                style={{ transform: 'scale(1.5)', cursor: 'pointer', accentColor: 'var(--primary)' }}
-                              />
-                            </div>
-
-                            <div style={{ position: 'relative', paddingTop: '56.25%' }}>
-                              <img
-                                src={video.thumbnail}
-                                alt={video.title}
-                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
-                              />
-                            </div>
-                            <div style={{ padding: '12px' }}>
-                              <div style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px', lineHeight: 1.4, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                                {video.title}
-                              </div>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--secondary)', marginBottom: '12px' }}>
-                                {new Date(video.publishedAt).toLocaleDateString()}
-                              </div>
-                              <button
-                                className="btn btn-secondary"
-                                style={{ width: '100%', fontSize: '0.85rem', padding: '8px' }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePreFill(video.url);
-                                }}
-                              >
-                                <Sparkles size={14} /> この動画のみ要約（設定へ）
-                              </button>
-                              <a
-                                href={video.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-secondary"
-                                onClick={(e) => e.stopPropagation()}
-                                style={{ width: '100%', fontSize: '0.85rem', padding: '8px', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'var(--foreground)' }}
-                              >
-                                <ExternalLink size={14} style={{ marginRight: '4px' }} /> 元のページを開く
-                              </a>
-                            </div>
+                        <div style={{ position: 'relative', paddingTop: '56.25%' }}>
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
+                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
+                          />
+                        </div>
+                        <div style={{ padding: '12px' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px', lineHeight: 1.4, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                            {video.title}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+                          <div style={{ fontSize: '0.8rem', color: 'var(--secondary)', marginBottom: '12px' }}>
+                            {new Date(video.publishedAt).toLocaleDateString()}
+                          </div>
+                          <button
+                            className="btn btn-secondary"
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '8px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePreFill(video.url);
+                            }}
+                          >
+                            <Sparkles size={14} /> この動画のみ要約（設定へ）
+                          </button>
+                          <a
+                            href={video.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '8px', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'var(--foreground)' }}
+                          >
+                            <ExternalLink size={14} style={{ marginRight: '4px' }} /> 元のページを開く
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            )
-          }
+            )}
+          </div>
+        )
+      }
 
-          {/* Research Tab */}
-          {
-            activeTab === 'research' && (
-              <div className="glass-panel animate-in" style={{ padding: '2rem' }}>
-                <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <TrendingUp color="#10b981" /> トレンド自動収集
-                </h2>
-                <p style={{ color: 'var(--secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-                  指定したキーワードに関する直近24時間の動画を再生数順に自動取得し、NotebookLM用リストを収集します。
-                </p>
+      {/* Research Tab */}
+      {
+        activeTab === 'research' && (
+          <div className="glass-panel animate-in" style={{ padding: '2rem' }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <TrendingUp color="#10b981" /> トレンド自動収集
+            </h2>
+            <p style={{ color: 'var(--secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+              指定したキーワードに関する直近24時間の動画を再生数順に自動取得し、NotebookLM用リストを収集します。
+            </p>
 
-                <div className="grid-2-1-1" style={{ marginBottom: '1.5rem' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
-                      検索キーワード
-                    </label>
+            <div className="grid-2-1-1" style={{ marginBottom: '1.5rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
+                  検索キーワード
+                </label>
+                <input
+                  type="text"
+                  className="glass-input"
+                  placeholder="例: AI副業, ChatGPT, 資産運用"
+                  value={researchQuery}
+                  onChange={(e) => setResearchQuery(e.target.value)}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
+                  対象期間
+                </label>
+                <select
+                  className="glass-input"
+                  value={researchTimeRange}
+                  onChange={(e) => setResearchTimeRange(e.target.value as '24h' | '7d')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="24h">24時間 (Daily)</option>
+                  <option value="7d">1週間 (Weekly)</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
+                  対象エリア
+                </label>
+                <select
+                  className="glass-input"
+                  value={researchIsGlobal ? 'global' : 'domestic'}
+                  onChange={(e) => setResearchIsGlobal(e.target.value === 'global')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="domestic">国内 (JP)</option>
+                  <option value="global">世界 (Global)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
+                  検索ソース
+                </label>
+                <select
+                  className="glass-input"
+                  value={researchSource}
+                  onChange={(e) => setResearchSource(e.target.value as any)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <option value="youtube">YouTube</option>
+                  <option value="note">Note (Hashtag)</option>
+                  <option value="mixed">YouTube + Note</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              className="btn btn-primary"
+              onClick={handleResearch}
+              disabled={researchLoading || !researchQuery}
+              style={{ width: '100%', marginBottom: '2rem' }}
+            >
+              {researchLoading ? <Loader2 className="loading-spinner" /> : <><Search size={18} /> 自動リサーチを実行</>}
+            </button>
+
+            {researchResultText && (
+              <div className="glass-panel" style={{ background: 'rgba(0,0,0,0.3)' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => copyToClipboard(researchResultText)}
+                    style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                  >
+                    <Copy size={14} /> Markdownをコピー
+                  </button>
+                </div>
+                <textarea
+                  className="glass-input"
+                  readOnly
+                  value={researchResultText}
+                  style={{ minHeight: '300px', fontSize: '0.9rem', fontFamily: 'monospace' }}
+                />
+              </div>
+            )}
+
+            {researchVideos.length > 0 && (
+              <div style={{ marginTop: '2rem' }}>
+                <div className="toolbar">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <input
-                      type="text"
-                      className="glass-input"
-                      placeholder="例: AI副業, ChatGPT, 資産運用"
-                      value={researchQuery}
-                      onChange={(e) => setResearchQuery(e.target.value)}
+                      type="checkbox"
+                      checked={checkedVideos.size === researchVideos.length && researchVideos.length > 0}
+                      onChange={selectAllVideos}
+                      style={{ transform: 'scale(1.2)', cursor: 'pointer' }}
                     />
+                    <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>
+                      すべて選択 ({checkedVideos.size}/{researchVideos.length})
+                    </span>
                   </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
-                      対象期間
-                    </label>
-                    <select
-                      className="glass-input"
-                      value={researchTimeRange}
-                      onChange={(e) => setResearchTimeRange(e.target.value as '24h' | '7d')}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <option value="24h">24時間 (Daily)</option>
-                      <option value="7d">1週間 (Weekly)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
-                      対象エリア
-                    </label>
-                    <select
-                      className="glass-input"
-                      value={researchIsGlobal ? 'global' : 'domestic'}
-                      onChange={(e) => setResearchIsGlobal(e.target.value === 'global')}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <option value="domestic">国内 (JP)</option>
-                      <option value="global">世界 (Global)</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, color: '#e2e8f0' }}>
-                      検索ソース
-                    </label>
-                    <select
-                      className="glass-input"
-                      value={researchSource}
-                      onChange={(e) => setResearchSource(e.target.value as any)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <option value="youtube">YouTube</option>
-                      <option value="note">Note (Hashtag)</option>
-                      <option value="mixed">YouTube + Note</option>
-                    </select>
-                  </div>
+                  <select
+                    className="glass-input"
+                    value={outputMode}
+                    onChange={(e) => setOutputMode(e.target.value as any)}
+                    style={{ fontSize: '0.85rem', padding: '8px', width: 'auto', marginRight: '8px', cursor: 'pointer' }}
+                  >
+                    <option value="notebook-source">NotebookLMソース</option>
+                    <option value="report">資産化レポート</option>
+                    <option value="article">深堀り解説記事</option>
+                  </select>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleBatchProcess}
+                    disabled={batchLoading || checkedVideos.size === 0}
+                    style={{ fontSize: '0.85rem', padding: '8px 16px', background: batchLoading ? '#cbd5e1' : undefined }}
+                  >
+                    {batchLoading ? <Loader2 className="loading-spinner" size={16} /> : <Sparkles size={16} />}
+                    {batchLoading ? '生成中...' : '一括生成を実行'}
+                  </button>
                 </div>
 
-                <button
-                  className="btn btn-primary"
-                  onClick={handleResearch}
-                  disabled={researchLoading || !researchQuery}
-                  style={{ width: '100%', marginBottom: '2rem' }}
-                >
-                  {researchLoading ? <Loader2 className="loading-spinner" /> : <><Search size={18} /> 自動リサーチを実行</>}
-                </button>
-
-                {researchResultText && (
-                  <div className="glass-panel" style={{ background: 'rgba(0,0,0,0.3)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => copyToClipboard(researchResultText)}
-                        style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+                  {researchVideos.map((video) => {
+                    const isChecked = checkedVideos.has(video.id);
+                    return (
+                      <div
+                        key={video.id}
+                        style={{
+                          background: isChecked ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0,0,0,0.2)',
+                          borderRadius: '12px',
+                          overflow: 'hidden',
+                          border: isChecked ? '2px solid var(--primary)' : '1px solid var(--glass-border)',
+                          position: 'relative',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onClick={() => toggleVideoSelection(video.id)}
                       >
-                        <Copy size={14} /> Markdownをコピー
-                      </button>
-                    </div>
-                    <textarea
-                      className="glass-input"
-                      readOnly
-                      value={researchResultText}
-                      style={{ minHeight: '300px', fontSize: '0.9rem', fontFamily: 'monospace' }}
-                    />
-                  </div>
-                )}
+                        <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => { }} // Handled by parent div click
+                            style={{ transform: 'scale(1.5)', cursor: 'pointer', accentColor: 'var(--primary)' }}
+                          />
+                        </div>
 
-                {researchVideos.length > 0 && (
-                  <div style={{ marginTop: '2rem' }}>
-                    <div className="toolbar">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <input
-                          type="checkbox"
-                          checked={checkedVideos.size === researchVideos.length && researchVideos.length > 0}
-                          onChange={selectAllVideos}
-                          style={{ transform: 'scale(1.2)', cursor: 'pointer' }}
-                        />
-                        <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>
-                          すべて選択 ({checkedVideos.size}/{researchVideos.length})
-                        </span>
-                      </div>
-                      <select
-                        className="glass-input"
-                        value={outputMode}
-                        onChange={(e) => setOutputMode(e.target.value as any)}
-                        style={{ fontSize: '0.85rem', padding: '8px', width: 'auto', marginRight: '8px', cursor: 'pointer' }}
-                      >
-                        <option value="notebook-source">NotebookLMソース</option>
-                        <option value="report">資産化レポート</option>
-                        <option value="article">深堀り解説記事</option>
-                      </select>
-                      <button
-                        className="btn btn-primary"
-                        onClick={handleBatchProcess}
-                        disabled={batchLoading || checkedVideos.size === 0}
-                        style={{ fontSize: '0.85rem', padding: '8px 16px', background: batchLoading ? '#cbd5e1' : undefined }}
-                      >
-                        {batchLoading ? <Loader2 className="loading-spinner" size={16} /> : <Sparkles size={16} />}
-                        {batchLoading ? '生成中...' : '一括生成を実行'}
-                      </button>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-                      {researchVideos.map((video) => {
-                        const isChecked = checkedVideos.has(video.id);
-                        return (
-                          <div
-                            key={video.id}
-                            style={{
-                              background: isChecked ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0,0,0,0.2)',
-                              borderRadius: '12px',
-                              overflow: 'hidden',
-                              border: isChecked ? '2px solid var(--primary)' : '1px solid var(--glass-border)',
-                              position: 'relative',
-                              transition: 'all 0.2s ease'
-                            }}
-                            onClick={() => toggleVideoSelection(video.id)}
-                          >
-                            <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10 }}>
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => { }} // Handled by parent div click
-                                style={{ transform: 'scale(1.5)', cursor: 'pointer', accentColor: 'var(--primary)' }}
-                              />
-                            </div>
-
-                            <div style={{ position: 'relative', paddingTop: '56.25%' }}>
-                              <img
-                                src={video.thumbnail}
-                                alt={video.title}
-                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
-                              />
-                            </div>
-                            <div style={{ padding: '12px' }}>
-                              <div style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px', lineHeight: 1.4, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                                {video.title}
-                              </div>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--secondary)', marginBottom: '12px' }}>
-                                {new Date(video.publishedAt).toLocaleDateString()}
-                              </div>
-                              <button
-                                className="btn btn-secondary"
-                                style={{ width: '100%', fontSize: '0.85rem', padding: '8px' }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handlePreFill(video.url);
-                                }}
-                              >
-                                <Sparkles size={14} /> この動画のみ要約（設定へ）
-                              </button>
-                              <a
-                                href={video.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-secondary"
-                                onClick={(e) => e.stopPropagation()}
-                                style={{ width: '100%', fontSize: '0.85rem', padding: '8px', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'var(--foreground)' }}
-                              >
-                                <ExternalLink size={14} style={{ marginRight: '4px' }} /> 元のページを開く
-                              </a>
-                            </div>
+                        <div style={{ position: 'relative', paddingTop: '56.25%' }}>
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
+                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: isChecked ? 0.8 : 1 }}
+                          />
+                        </div>
+                        <div style={{ padding: '12px' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '8px', lineHeight: 1.4, height: '40px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                            {video.title}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+                          <div style={{ fontSize: '0.8rem', color: 'var(--secondary)', marginBottom: '12px' }}>
+                            {new Date(video.publishedAt).toLocaleDateString()}
+                          </div>
+                          <button
+                            className="btn btn-secondary"
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '8px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePreFill(video.url);
+                            }}
+                          >
+                            <Sparkles size={14} /> この動画のみ要約（設定へ）
+                          </button>
+                          <a
+                            href={video.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '8px', marginTop: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none', color: 'var(--foreground)' }}
+                          >
+                            <ExternalLink size={14} style={{ marginRight: '4px' }} /> 元のページを開く
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            )
-          }
-        </main >
-      );
+            )}
+          </div>
+        )
+      }
+    </main >
+  );
 }
