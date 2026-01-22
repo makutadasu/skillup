@@ -148,14 +148,23 @@ export default function Home() {
         }),
       });
 
+      let step1Data;
+      const resText = await res1.text();
+
+      try {
+        step1Data = JSON.parse(resText);
+      } catch (jsonError) {
+        // If response is not JSON, it's likely a raw error message (e.g. timeout, crash)
+        throw new Error(resText.slice(0, 200) || `Step 1 Request Failed (${res1.status})`);
+      }
+
       if (!res1.ok) {
-        const data = await res1.json();
-        const errorMessage = data.error || 'Failed at Step 1 (Gemini)';
-        const hint = data.hint ? `\nHint: ${data.hint}` : '';
+        const errorMessage = step1Data.error || 'Failed at Step 1 (Gemini)';
+        const hint = step1Data.hint ? `\nHint: ${step1Data.hint}` : '';
         throw new Error(errorMessage + hint);
       }
 
-      const step1Data = await res1.json();
+
       const organizedContent = step1Data.organizedContent;
       setCurrentTitle(step1Data.title || '');
       setCurrentThumbnail(step1Data.thumbnail || '');
@@ -168,12 +177,19 @@ export default function Home() {
         body: JSON.stringify({ organizedContent }),
       });
 
-      if (!res2.ok) {
-        const data = await res2.json();
-        throw new Error(data.error || 'Failed at Step 2 (OpenAI)');
+      let step2Data;
+      const res2Text = await res2.text();
+      try {
+        step2Data = JSON.parse(res2Text);
+      } catch (e) {
+        throw new Error(res2Text.slice(0, 200) || `Step 2 Request Failed (${res2.status})`);
       }
 
-      const finalData = await res2.json();
+      if (!res2.ok) {
+        throw new Error(step2Data.error || 'Failed at Step 2 (OpenAI)');
+      }
+
+      const finalData = step2Data;
       setResult(finalData.summary);
 
       // Save to history
@@ -216,12 +232,18 @@ export default function Home() {
         })
       });
 
+      let data;
+      const resText = await response.text();
+      try {
+        data = JSON.parse(resText);
+      } catch (e) {
+        throw new Error(resText.slice(0, 200) || `Channel Fetch Failed (${response.status})`);
+      }
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'Failed to fetch channel');
       }
 
-      const data = await response.json();
       setChannelVideos(data.videos);
       setChannelName(data.channelName);
     } catch (err: any) {
@@ -265,11 +287,18 @@ export default function Home() {
         body: JSON.stringify({ urls, outputMode }),
       });
 
+      let data;
+      const resText = await response.text();
+      try {
+        data = JSON.parse(resText);
+      } catch (e) {
+        throw new Error(resText.slice(0, 200) || `Batch Request Failed (${response.status})`);
+      }
+
       if (!response.ok) {
         throw new Error('Batch process failed');
       }
 
-      const data = await response.json();
       setChannelResultText(data.result);
 
     } catch (e: any) {
@@ -313,15 +342,6 @@ export default function Home() {
 
   const loadBookmark = (bookmark: BookmarkedChannel) => {
     setChannelInput(bookmark.query);
-    // Automatically fetch? Maybe better to let user click fetch, or auto fetch.
-    // Let's auto fetch for better UX, but we need to wait for state update.
-    // Actually fetchChannelVideos uses channelInput state which might not be updated yet.
-    // So we'll update state and then call a version that takes an arg, OR just update input.
-    // To keep it simple, just update input and user clicks "Get".
-    // EDIT: Updating to auto-fetch is user friendly.
-    // We can modify fetchChannelVideos to accept an optional argument.
-    // For now, let's just set input and let user click, or trigger via ref.
-    // Actually, let's just set the input.
   };
 
   const handleResearch = async () => {
@@ -341,24 +361,18 @@ export default function Home() {
         })
       });
 
-      if (!response.ok) {
-        let errorMessage = `HTTP Error ${response.status}`;
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.error || JSON.stringify(errorData);
-        } catch (parseError) {
-          // If JSON parse fails, try text
-          try {
-            const text = await response.text();
-            if (text) errorMessage = text.slice(0, 100); // Limit length
-          } catch (e) {
-            // ignore
-          }
-        }
-        throw new Error(errorMessage);
+      let data;
+      const resText = await response.text();
+      try {
+        data = JSON.parse(resText);
+      } catch (e) {
+        throw new Error(resText.slice(0, 200) || `Research Request Failed (${response.status})`);
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP Error ${response.status}`);
+      }
+
       const videos: ChannelVideo[] = data.videos;
 
       setResearchVideos(videos);
@@ -425,11 +439,18 @@ export default function Home() {
         body: JSON.stringify({ urls, outputMode }),
       });
 
+      let data;
+      const resText = await response.text();
+      try {
+        data = JSON.parse(resText);
+      } catch (e) {
+        throw new Error(resText.slice(0, 200) || `Batch Request Failed (${response.status})`);
+      }
+
       if (!response.ok) {
         throw new Error('Batch process failed');
       }
 
-      const data = await response.json();
       setResearchResultText(data.result);
 
     } catch (e: any) {
@@ -558,9 +579,9 @@ export default function Home() {
 
             <div style={{ marginBottom: '2rem' }}>
               <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 500, color: '#94a3b8', fontSize: '0.9rem' }}>
-                AIモデル選択 (Gemini 3 シリーズ)
+                AIモデル選択 (バージョン切り替え)
               </label>
-              <div className="grid-2">
+              <div className="grid-3">
                 <div
                   className={`glass-panel hover-scale ${modelType === 'gemini-3-flash-preview' ? 'selected-model' : ''}`}
                   onClick={() => setModelType('gemini-3-flash-preview')}
@@ -570,7 +591,7 @@ export default function Home() {
                     <Zap size={16} color="#3b82f6" />
                     <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 3 Flash</span>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>高速・大量要約に最適</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>最新・超高速 (Preview)</p>
                 </div>
                 <div
                   className={`glass-panel hover-scale ${modelType === 'gemini-3-pro-preview' ? 'selected-model' : ''}`}
@@ -579,9 +600,20 @@ export default function Home() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                     <Brain size={16} color="#a78bfa" />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 3 Pro (Deep Think)</span>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 3 Pro</span>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>深い戦略分析・思考重視</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>深い思考・分析 (Preview)</p>
+                </div>
+                <div
+                  className={`glass-panel hover-scale ${modelType === 'gemini-2.0-flash-exp' ? 'selected-model' : ''}`}
+                  onClick={() => setModelType('gemini-2.0-flash-exp')}
+                  style={{ padding: '12px', cursor: 'pointer', border: modelType === 'gemini-2.0-flash-exp' ? '2px solid #10b981' : undefined }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <Zap size={16} color="#10b981" />
+                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 2.0 Flash</span>
+                  </div>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>安定版・高速 (推奨)</p>
                 </div>
               </div>
 
@@ -652,7 +684,7 @@ export default function Home() {
                   ) : (
                     <>
                       <Sparkles size={20} />
-                      <span>抽出・要約を実行 (Gemini 3)</span>
+                      <span>抽出・要約を実行</span>
                     </>
                   )}
                 </button>
