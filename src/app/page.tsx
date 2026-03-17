@@ -39,7 +39,7 @@ export default function Home() {
   // Main feature state
   const [url, setUrl] = useState('');
   const [focusPrompt, setFocusPrompt] = useState('');
-  const [modelType, setModelType] = useState<GeminiModelType>('gemini-3-flash-preview');
+  const [modelType, setModelType] = useState<GeminiModelType>('gemini-2.5-flash');
   const [outputMode, setOutputMode] = useState<'report' | 'article' | 'notebook-source' | 'action-plan'>('report');
   const [result, setResult] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
@@ -578,33 +578,7 @@ export default function Home() {
             </div>
 
             <div style={{ marginBottom: '2rem' }}>
-              <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 500, color: '#94a3b8', fontSize: '0.9rem' }}>
-                AIモデル選択 (バージョン切り替え)
-              </label>
-              <div className="grid-2">
-                <div
-                  className={`glass-panel hover-scale ${modelType === 'gemini-3-flash-preview' ? 'selected-model' : ''}`}
-                  onClick={() => setModelType('gemini-3-flash-preview')}
-                  style={{ padding: '12px', cursor: 'pointer', border: modelType === 'gemini-3-flash-preview' ? '2px solid var(--primary)' : undefined }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <Zap size={16} color="#3b82f6" />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 3 Flash</span>
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>最新・高速 (Preview)</p>
-                </div>
-                <div
-                  className={`glass-panel hover-scale ${modelType === 'gemini-2.5-flash' ? 'selected-model' : ''}`}
-                  onClick={() => setModelType('gemini-2.5-flash')}
-                  style={{ padding: '12px', cursor: 'pointer', border: modelType === 'gemini-2.5-flash' ? '2px solid var(--accent)' : undefined }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <Brain size={16} color="#a78bfa" />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 2.5 Flash</span>
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>安定版・高速 (GA)</p>
-                </div>
-              </div>
+
 
               <div style={{ marginBottom: '2rem' }}>
                 <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 500, color: '#94a3b8', fontSize: '0.9rem' }}>

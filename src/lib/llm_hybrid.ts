@@ -7,7 +7,7 @@ export async function processWithGemini(
     rawText: string,
     contextType: 'youtube' | 'web',
     focusPoint?: string,
-    modelType: GeminiModelType = 'gemini-3-flash-preview',
+    modelType: GeminiModelType = 'gemini-2.5-flash',
     url?: string, // Optional URL if we want Gemini to use its grounding/access
     outputMode: 'report' | 'article' | 'notebook-source' | 'action-plan' = 'report' // New parameter for output control
 ) {
@@ -222,15 +222,33 @@ ${url ? `対象URL: ${url}\n` : ''}
     解析用テキスト: ${rawText}
     `;
 
-    try {
-        console.log(`[Gemini 3.0] Processing with ${modelType} (Grounding enabled, Mode: ${outputMode})...`);
-        const result = await model.generateContent(systemPrompt);
-        const response = await result.response;
-        return response.text();
-    } catch (error: any) {
-        console.error('Gemini API Error:', error);
-        const detailedError = error.message || 'Unknown Gemini API Error';
-        throw new Error(`Gemini Error: ${detailedError} `);
+    const MAX_RETRIES = 3;
+    const BASE_DELAY_MS = 30000; // 30 seconds base delay for 429 errors
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            console.log(`[Gemini] Attempt ${attempt}/${MAX_RETRIES} with ${modelType} (Mode: ${outputMode})...`);
+            const result = await model.generateContent(systemPrompt);
+            const response = await result.response;
+            return response.text();
+        } catch (error: any) {
+            const errorMessage = error.message || 'Unknown Gemini API Error';
+            const is429 = errorMessage.includes('429') || errorMessage.includes('Too Many Requests') || errorMessage.includes('quota');
+
+            if (is429 && attempt < MAX_RETRIES) {
+                // Extract retry delay from error if available, otherwise use exponential backoff
+                const retryMatch = errorMessage.match(/retry in (\d+(?:\.\d+)?)/i);
+                const waitSeconds = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) : BASE_DELAY_MS / 1000 * attempt;
+                const waitMs = waitSeconds * 1000;
+
+                console.log(`[Gemini] Rate limited (429). Waiting ${waitSeconds}s before retry ${attempt + 1}/${MAX_RETRIES}...`);
+                await new Promise(resolve => setTimeout(resolve, waitMs));
+                continue;
+            }
+
+            console.error('Gemini API Error:', error);
+            throw new Error(`Gemini Error: ${errorMessage} `);
+        }
     }
 }
 
