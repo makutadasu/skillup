@@ -581,7 +581,7 @@ export default function Home() {
               <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 500, color: '#94a3b8', fontSize: '0.9rem' }}>
                 AIモデル選択 (バージョン切り替え)
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+              <div className="grid-2">
                 <div
                   className={`glass-panel hover-scale ${modelType === 'gemini-2.5-flash' ? 'selected-model' : ''}`}
                   onClick={() => setModelType('gemini-2.5-flash')}
@@ -602,18 +602,7 @@ export default function Home() {
                     <Brain size={16} color="#a78bfa" />
                     <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 2.5 Pro</span>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>高精度・安定版 (GA)</p>
-                </div>
-                <div
-                  className={`glass-panel hover-scale ${modelType === 'gemini-3.1-pro-preview' ? 'selected-model' : ''}`}
-                  onClick={() => setModelType('gemini-3.1-pro-preview')}
-                  style={{ padding: '12px', cursor: 'pointer', border: modelType === 'gemini-3.1-pro-preview' ? '2px solid #f59e0b' : undefined }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <Star size={16} color="#f59e0b" />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Gemini 3.1 Pro</span>
-                  </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>最高精度・最新 (Preview)</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--secondary)', margin: 0 }}>高精度・深い分析 (GA)</p>
                 </div>
               </div>
 
