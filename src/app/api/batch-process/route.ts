@@ -42,7 +42,7 @@ export async function POST(request: Request) {
                     data.content,
                     'youtube',
                     focusPrompt,
-                    'gemini-3-flash-preview',
+                    'gemini-3-flash',
                     url,
                     outputMode
                 );

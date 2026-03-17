@@ -7,7 +7,7 @@ export async function processWithGemini(
     rawText: string,
     contextType: 'youtube' | 'web',
     focusPoint?: string,
-    modelType: GeminiModelType = 'gemini-3-flash-preview',
+    modelType: GeminiModelType = 'gemini-3-flash',
     url?: string, // Optional URL if we want Gemini to use its grounding/access
     outputMode: 'report' | 'article' | 'notebook-source' | 'action-plan' = 'report' // New parameter for output control
 ) {
